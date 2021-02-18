@@ -34,12 +34,47 @@ Resources:
     ServerlessRestApi:
       Type: AWS::Serverless::Api
       Properties:
-        StageName: sit1
+        StageName: Prod
         Cors:
           AllowMethods: "'POST, GET'"
           AllowHeaders: "'X-Forwarded-For'"
           AllowOrigin: "*"
           AllowCredentials: True
+        DefinitionBody:
+          swagger: "2.0"
+          info:
+            description: "This api used to get access to the raw data that powers the site."
+            version: "1.0"
+            title:
+              Ref: AWS::StackName
+          tags:
+            - name: "example"
+              description: "example tag"
+          paths:
+            "/tranmere3":
+              get:
+                tags:
+                  - "example"
+                summary: "A summary"
+                description: "A description"
+                operationId: "tranmerd3"
+                produces:
+                  - "application/json"
+                parameters:
+                  - name: "test"
+                    in: "query"
+                    description: "A test parameter"
+                    required: false
+                    type: "integer"
+                    format: "int64"
+                responses:
+                  "200":
+                    description: "Success"
+                x-amazon-apigateway-integration:
+                  httpMethod: POST
+                  type: aws_proxy
+                  uri:
+                    Fn::Sub: arn:${AWS::Partition}:apigateway:${AWS::Region}:lambda:path/2015-03-31/functions/${tranmere3Function.Arn}/invocations
 
     StagingBasePathMapping:
       DependsOn: ServerlessRestApiProdStage
@@ -48,7 +83,7 @@ Resources:
         BasePath: tranmere3
         DomainName: api.sit1.tranmere-web.com
         RestApiId: !Ref ServerlessRestApi
-        Stage: sit1
+        Stage: Prod
 
 Outputs:
   Endpoint:
