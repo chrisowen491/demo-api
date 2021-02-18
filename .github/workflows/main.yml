@@ -16,11 +16,6 @@ jobs:
         run: npm run build
       - name: Unit Test
         run: npm run test
-                    
-  validate-sam:
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v2
       - name: Configure AWS credentials
         id: creds
         uses: aws-actions/configure-aws-credentials@v1
@@ -29,4 +24,11 @@ jobs:
           aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           aws-region: 'eu-west-1'      
       - name: SAM Validate
-        run: sam validate                 
+        run: sam validate   
+      - name: Bump version and push tag
+        uses: anothrNick/github-tag-action@1.26.0
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          WITH_V: true  
+          RELEASE_BRANCHES: .* 
+          INITIAL_VERSION: v1.0.0             
