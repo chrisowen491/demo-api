@@ -5,7 +5,8 @@ on:
     branches:
       - sit1
 jobs:
-  validate-build:
+
+  run-tests:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
@@ -16,3 +17,8 @@ jobs:
       - name: Unit Test
         run: npm run test
                     
+  validate-sam:
+    runs-on: ubuntu-latest
+    steps:
+      - name: SAM Validate
+        run: sam validate                 
