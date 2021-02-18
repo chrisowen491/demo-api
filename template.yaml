@@ -43,7 +43,7 @@ Resources:
         DefinitionBody:
           swagger: "2.0"
           info:
-            description: "This api used to get access to the raw data that powers the site."
+            description: "This is a description."
             version: "1.0"
             title:
               Ref: AWS::StackName
