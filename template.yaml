@@ -34,7 +34,7 @@ Resources:
     ServerlessRestApi:
       Type: AWS::Serverless::Api
       Properties:
-        StageName: Prod
+        StageName: sit1
         Cors:
           AllowMethods: "'POST, GET'"
           AllowHeaders: "'X-Forwarded-For'"
@@ -48,7 +48,7 @@ Resources:
         BasePath: tranmere3
         DomainName: api.sit1.tranmere-web.com
         RestApiId: !Ref ServerlessRestApi
-        Stage: Prod
+        Stage: sit1
 
 Outputs:
   Endpoint:
