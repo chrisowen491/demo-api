@@ -20,5 +20,6 @@ jobs:
   validate-sam:
     runs-on: ubuntu-latest
     steps:
+      - uses: actions/checkout@v2
       - name: SAM Validate
         run: sam validate                 
