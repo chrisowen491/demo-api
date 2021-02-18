@@ -1,28 +1,18 @@
-# This is a basic workflow to help you get started with Actions
+name: Test
 
-name: Deploy
-
-# Controls when the action will run. Triggers the workflow on push or pull request
-# events but only for the master branch
 on:
   push:
     branches: [ main ]
-
 
 jobs:
   sam-validate-build-test-deploy:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
-      - name: Configure AWS credentials
-        id: creds
-        uses: aws-actions/configure-aws-credentials@v1
-        with:
-          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
-          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-          aws-region: 'eu-west-1'
-      - name: SAM Build
+      - name: Install
+        run: npm install
+      - name: Build
         run: npm run build
-      - name: SAM Deploy
-        run:
-          sam deploy --stack-name tranmere3 --s3-bucket ${{ secrets.AWS_DEPLOY_BUCKET }}  --capabilities CAPABILITY_IAM      
+      - name: Unit Test
+        run: npm run test
+                    
