@@ -31,6 +31,16 @@ Resources:
             Path: /
             Method: get
 
+    ServerlessRestApi:
+      Type: AWS::Serverless::Api
+      Properties:
+        StageName: Prod
+        Cors:
+          AllowMethods: "'POST, GET'"
+          AllowHeaders: "'X-Forwarded-For'"
+          AllowOrigin: "*"
+          AllowCredentials: True
+
     StagingBasePathMapping:
       DependsOn: ServerlessRestApiProdStage
       Type: AWS::ApiGateway::BasePathMapping
