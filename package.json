@@ -1,0 +1,29 @@
+{
+  "name": "tranmere3",
+  "version": "0.0.1",
+  "description": "The tranmere3 stack",
+  "scripts": {
+    "build": "cp package.json src/package.json && sam build",
+    "pretest": "eslint .",
+    "test": "nyc mocha tests/unit/"
+  },
+  "vertical": "Insurance",
+  "author": "",
+  "devDependencies": {
+    "eslint": "^6.6.0",
+    "nyc": "^15.1.0",
+    "aws-sdk": "^2.815.0",
+    "aws-xray-sdk": "^3.2.0",
+    "chai": "^4.2.0",
+    "mocha": "^8.2.1"
+  },
+  "eslintConfig": {
+    "env": {
+      "node": true,
+      "es6": true
+    },
+    "parserOptions": {
+      "ecmaVersion": 8
+    }
+  }
+}

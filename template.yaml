@@ -1,0 +1,46 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Transform: AWS::Serverless-2016-10-31
+Description: >
+  The tranmere3 stack
+
+Globals:
+  Function:
+    Timeout: 3
+    AutoPublishAlias: live
+
+Parameters:
+  EnvironmentName:
+    Type: String
+    Default: sit1
+
+Resources:     
+
+  tranmere3Function:
+    Type: AWS::Serverless::Function
+    Properties:
+      CodeUri: src/
+      Handler: tranmere3.handler
+      Runtime: nodejs12.x
+      Environment:
+        Variables:
+          EnvironmentName: !Ref 'EnvironmentName'
+      Events:
+        PageRequest:
+          Type: Api
+          Properties:
+            Path: /
+            Method: get
+
+    StagingBasePathMapping:
+      DependsOn: ServerlessRestApiProdStage
+      Type: AWS::ApiGateway::BasePathMapping
+      Properties:
+        BasePath: tranmere3
+        DomainName: api.sit1.tranmere-web.com
+        RestApiId: !Ref ServerlessRestApi
+        Stage: Prod
+
+Outputs:
+  Endpoint:
+    Description: "API Gateway endpoint URL the endpoint"
+    Value: "https://api.sit1.tranmere-web.com/tranmere3/"
