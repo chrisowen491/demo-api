@@ -5,7 +5,7 @@ on:
     branches: [ sit1 ]
 
 jobs:
-  sam-validate-build-test-deploy:
+  deploy-using-sam:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2

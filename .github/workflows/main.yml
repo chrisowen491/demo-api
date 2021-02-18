@@ -1,11 +1,11 @@
 name: Test
 
 on:
-  push:
-    branches: [ main ]
-
+  pull_request:
+    branches:
+      - sit1
 jobs:
-  sam-validate-build-test-deploy:
+  validate-build:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
