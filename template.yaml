@@ -20,10 +20,7 @@ Resources:
     Properties:
       StageName: sit1
       Cors:
-        AllowMethods: "'POST, GET'"
-        AllowHeaders: "'Content-Type, x-api-key'"
         AllowOrigin: "'*'"
-        MaxAge: "'600'"
       DefinitionBody:
         swagger: "2.0"
         info:
@@ -41,16 +38,8 @@ Resources:
                 - "example"
               summary: "A summary"
               description: "A description"
-              operationId: "tranmere3"
               produces:
                 - "application/json"
-              parameters:
-                - name: "test"
-                  in: "query"
-                  description: "A test parameter"
-                  required: false
-                  type: "integer"
-                  format: "int64"
               responses:
                 "200":
                   description: "Success"
@@ -59,7 +48,6 @@ Resources:
                 type: aws_proxy
                 uri:
                   Fn::Sub: arn:${AWS::Partition}:apigateway:${AWS::Region}:lambda:path/2015-03-31/functions/${tranmere3Function.Arn}/invocations
-
 
   tranmere3Function:
     Type: AWS::Serverless::Function
