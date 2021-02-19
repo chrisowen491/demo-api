@@ -55,7 +55,7 @@ Resources:
             Method: get
 
     StagingBasePathMapping:
-      DependsOn: tranmere3RestApisit1Stage
+      DependsOn: tranmere3RestApiProdStage
       Type: AWS::ApiGateway::BasePathMapping
       Properties:
         BasePath: tranmere3
