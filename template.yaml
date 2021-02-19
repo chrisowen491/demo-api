@@ -15,6 +15,52 @@ Parameters:
 
 Resources:     
 
+  tranmere3RestApi:
+    Type: AWS::Serverless::Api
+    Properties:
+      StageName: Prod
+      Cors:
+        AllowMethods: "'POST, GET'"
+        AllowHeaders: "'X-Forwarded-For'"
+        AllowOrigin: "*"
+        AllowCredentials: True
+      DefinitionBody:
+        swagger: "2.0"
+        info:
+          description: "This is a description."
+          version: "1.0"
+          title:
+            Ref: AWS::StackName
+        tags:
+          - name: "example"
+            description: "example tag"
+        paths:
+          "/tranmere3":
+            get:
+              tags:
+                - "example"
+              summary: "A summary"
+              description: "A description"
+              operationId: "tranmerd3"
+              produces:
+                - "application/json"
+              parameters:
+                - name: "test"
+                  in: "query"
+                  description: "A test parameter"
+                  required: false
+                  type: "integer"
+                  format: "int64"
+              responses:
+                "200":
+                  description: "Success"
+              x-amazon-apigateway-integration:
+                httpMethod: POST
+                type: aws_proxy
+                uri:
+                  Fn::Sub: arn:${AWS::Partition}:apigateway:${AWS::Region}:lambda:path/2015-03-31/functions/${tranmere3Function.Arn}/invocations
+
+
   tranmere3Function:
     Type: AWS::Serverless::Function
     Properties:
@@ -31,51 +77,6 @@ Resources:
             Path: /
             RestApiId: !Ref tranmere3RestApi
             Method: get
-
-    tranmere3RestApi:
-      Type: AWS::Serverless::Api
-      Properties:
-        StageName: Prod
-        Cors:
-          AllowMethods: "'POST, GET'"
-          AllowHeaders: "'X-Forwarded-For'"
-          AllowOrigin: "*"
-          AllowCredentials: True
-        DefinitionBody:
-          swagger: "2.0"
-          info:
-            description: "This is a description."
-            version: "1.0"
-            title:
-              Ref: AWS::StackName
-          tags:
-            - name: "example"
-              description: "example tag"
-          paths:
-            "/tranmere3":
-              get:
-                tags:
-                  - "example"
-                summary: "A summary"
-                description: "A description"
-                operationId: "tranmerd3"
-                produces:
-                  - "application/json"
-                parameters:
-                  - name: "test"
-                    in: "query"
-                    description: "A test parameter"
-                    required: false
-                    type: "integer"
-                    format: "int64"
-                responses:
-                  "200":
-                    description: "Success"
-                x-amazon-apigateway-integration:
-                  httpMethod: POST
-                  type: aws_proxy
-                  uri:
-                    Fn::Sub: arn:${AWS::Partition}:apigateway:${AWS::Region}:lambda:path/2015-03-31/functions/${tranmere3Function.Arn}/invocations
 
     StagingBasePathMapping:
       DependsOn: tranmere3RestApiProdStage
