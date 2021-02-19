@@ -1,0 +1,46 @@
+{
+	"info": {
+		"_postman_id": "a2e203d5-114b-4fd6-848f-e85d9c0ec18c",
+		"name": "Test",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "Tranmere Test",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"let jsonData = pm.response.json();",
+							"pm.test(\"Status code is 200\", function () {",
+							"    pm.response.to.have.status(200);",
+							"});",
+							"pm.test(\"Response\", function () {",
+							"    let response = pm.response.json();",
+							"\tpm.expect(response.message).to.eql(\"hello world\");",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "https://{{domain}}/{{basePath}}",
+					"protocol": "https",
+					"host": [
+						"{{domain}}"
+					],
+					"path": [
+						"{{basePath}}",
+						""
+					]
+				}
+			},
+			"response": []
+		}
+	]
+}
