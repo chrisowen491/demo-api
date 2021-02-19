@@ -55,12 +55,13 @@ Resources:
             Method: get
 
   StagingBasePathMapping:
+    DependsOn: tranmere3RestApiProdStage
     Type: AWS::ApiGateway::BasePathMapping
     Properties:
       BasePath: tranmere3
-      DomainName: api.${EnvName}.tranmere-web.com"
+      DomainName: !Sub "api.${EnvName}.tranmere-web.com"
       RestApiId: !Ref tranmere3RestApi
-      StageName: Prod
+      Stage: Prod
 
 Outputs:
   Endpoint:
