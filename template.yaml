@@ -29,9 +29,10 @@ Resources:
           Type: Api
           Properties:
             Path: /
+            RestApiId: !Ref tranmere3RestApi
             Method: get
 
-    ServerlessRestApi:
+    tranmere3RestApi:
       Type: AWS::Serverless::Api
       Properties:
         StageName: Prod
@@ -77,12 +78,12 @@ Resources:
                     Fn::Sub: arn:${AWS::Partition}:apigateway:${AWS::Region}:lambda:path/2015-03-31/functions/${tranmere3Function.Arn}/invocations
 
     StagingBasePathMapping:
-      DependsOn: ServerlessRestApiProdStage
+      DependsOn: tranmere3RestApiProdStage
       Type: AWS::ApiGateway::BasePathMapping
       Properties:
         BasePath: tranmere3
         DomainName: api.sit1.tranmere-web.com
-        RestApiId: !Ref ServerlessRestApi
+        RestApiId: !Ref tranmere3RestApi
         Stage: Prod
 
 Outputs:
