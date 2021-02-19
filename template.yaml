@@ -9,7 +9,7 @@ Globals:
     AutoPublishAlias: live
 
 Parameters:
-  Environment:
+  EnvName:
     Type: String
     Default: sit1
     Description: The name of the environment to deploy to
@@ -34,6 +34,8 @@ Resources:
     Properties:
       Cors:
         AllowOrigin: "'*'"
+      StageName: Prod
+        
   tranmere3Function:
     Type: AWS::Serverless::Function
     Properties:
@@ -42,8 +44,8 @@ Resources:
       Runtime: nodejs12.x
       Environment:
         Variables:
-          Environment: !Ref 'Environment'
-          SpecialFeature: !FindInMap[SpecialFeature1, !Ref 'Environment', answer]
+          EnvName: !Ref EnvName
+          SpecialFeature: !FindInMap [SpecialFeature1, !Ref EnvName, answer]
       Events:
         PageRequest:
           Type: Api
@@ -57,10 +59,11 @@ Resources:
       Type: AWS::ApiGateway::BasePathMapping
       Properties:
         BasePath: tranmere3
-        DomainName: !Sub "api.${Environment}.tranmere-web.com"
+        DomainName: !Sub "api.${EnvName}.tranmere-web.com"
         RestApiId: !Ref tranmere3RestApi
+        StageName: Prod
 
 Outputs:
   Endpoint:
     Description: "API Gateway endpoint URL the endpoint"
-    Value: !Sub "https://api.${Environment}.tranmere-web.com/tranmere3/"
+    Value: !Sub "https://api.${EnvName}.tranmere-web.com/tranmere3/"
