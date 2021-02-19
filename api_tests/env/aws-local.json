@@ -7,13 +7,7 @@
 			"value": "localhost:3000",
 			"description": "",
 			"enabled": true
-        },
-        {
-			"key": "basePath",
-			"value": "",
-			"description": "",
-			"enabled": true
-		}
+        }
 	],
 	"_postman_variable_scope": "environment",
 	"_postman_exported_at": "2018-11-15T10:59:31.343Z",

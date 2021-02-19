@@ -1,0 +1,8 @@
+[
+  {
+    "basePath": "tranmere3",
+    "expectedResult": {
+          "message": "hello world"
+    }
+  }
+]

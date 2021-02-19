@@ -5,8 +5,7 @@
   "scripts": {
     "build": "cp package.json src/package.json && sam build",
     "pretest": "eslint .",
-    "test": "nyc mocha tests/unit/",
-    "intTest": "newman run ./tests/integration/collection.json --environment ./tests/env/aws-sit1.json"
+    "test": "nyc mocha tests/unit/"
   },
   "vertical": "Insurance",
   "author": "",
@@ -19,7 +18,8 @@
     "nyc": "^15.1.0",
     "chai": "^4.2.0",
     "mocha": "^8.2.1",
-    "newman": "^5.2.2"
+    "newman": "^5.2.2",
+    "yargs": "^16.2.0"
   },
   "eslintConfig": {
     "env": {
