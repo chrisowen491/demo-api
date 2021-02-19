@@ -3,7 +3,7 @@ const AWSXRay = require('aws-xray-sdk');
 exports.handler = async function (event, context) {
   return {
     "headers": { 
-      "Content-Type": 'application/json', 
+      "Content-Type": "application/json", 
       "Access-Control-Allow-Origin": "*"
     },
     "statusCode": 200,
