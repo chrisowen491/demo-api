@@ -19,6 +19,11 @@ Resources:
     Type: AWS::Serverless::Api
     Properties:
       StageName: sit1
+      Cors:
+        AllowMethods: "'POST, GET'"
+        AllowHeaders: "'Content-Type, x-api-key'"
+        AllowOrigin: "'https://portal.tranmere-web.com'"
+        MaxAge: "'600'"
       DefinitionBody:
         swagger: "2.0"
         info:
