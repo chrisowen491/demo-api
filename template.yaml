@@ -13,7 +13,7 @@ Parameters:
     Type: String
     Default: sit1
     Description: The name of the environment to deploy to
-    Allowedvalues:
+    AllowedValues:
       - sit1
       - pre1
       - prod1
@@ -35,7 +35,7 @@ Resources:
       Cors:
         AllowOrigin: "'*'"
       StageName: Prod
-        
+
   tranmere3Function:
     Type: AWS::Serverless::Function
     Properties:
