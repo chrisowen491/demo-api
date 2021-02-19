@@ -19,11 +19,6 @@ Resources:
     Type: AWS::Serverless::Api
     Properties:
       StageName: Prod
-      Cors:
-        AllowMethods: "'POST, GET'"
-        AllowHeaders: "'X-Forwarded-For'"
-        AllowOrigin: "*"
-        AllowCredentials: True
       DefinitionBody:
         swagger: "2.0"
         info:
