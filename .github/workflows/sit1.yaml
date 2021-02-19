@@ -20,4 +20,4 @@ jobs:
         run: npm run build
       - name: SAM Deploy
         run:
-          sam deploy --tags sit1 tranmere-web --debug --stack-name tranmere3 --s3-bucket ${{ secrets.AWS_DEPLOY_BUCKET }}  --capabilities CAPABILITY_IAM     
+          sam deploy --tags env=sit1 team=tranmere --debug --stack-name tranmere3 --s3-bucket ${{ secrets.AWS_DEPLOY_BUCKET }}  --capabilities CAPABILITY_IAM     
