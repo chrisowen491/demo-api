@@ -1,0 +1,21 @@
+{
+    "configurations": [
+        {
+            "type": "aws-sam",
+            "request": "direct-invoke",
+            "name": "API tranmere3:tranmere3Function",
+            "invokeTarget": {
+                "target": "api",
+                "templatePath": "template.yaml",
+                "logicalId": "tranmere3Function"
+            },
+            "api": {
+                "path": "/",
+                "httpMethod": "get",
+                "payload": {
+                    "json": {}
+                }
+            }
+        }
+    ]
+}
