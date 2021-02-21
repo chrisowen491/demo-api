@@ -9,6 +9,7 @@ jobs:
     runs-on: ubuntu-latest
     env:
       ENV_NAME: sit1
+    environment: sit1  
     steps:
       - uses: actions/checkout@v2
       - name: Configure AWS credentials
