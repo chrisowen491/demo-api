@@ -9,7 +9,9 @@ jobs:
     runs-on: ubuntu-latest
     env:
       ENV_NAME: sit1
-    environment: sit1  
+    environment:   
+      name: sit1
+      url: https://api.sit1.tranmere-web.com/tranmere6/
     steps:
       - uses: actions/checkout@v2
       - name: Configure AWS credentials
