@@ -83,6 +83,7 @@ Resources:
                 - ''
                 - - 's3://'
                   - Ref: S3BucketName
+                  - '/'
                   - Ref: SwaggerFile
 
   tranmere5:
