@@ -1,6 +1,6 @@
 openapi: "3.0.1"
 info:
-  description: "The tranmere6 stack"
+  description: "The tranmere6 stack is great"
   version: "1.0"
   title: "tranmere6"
 paths:
