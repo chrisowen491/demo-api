@@ -85,7 +85,10 @@ Resources:
             Location:
               Fn::Join:
                 - ''
-                -  - Ref: SwaggerFile
+                - - 's3://'
+                  - Ref: S3BucketName
+                  - '/'
+                  - Ref: SwaggerFile
 
   tranmere6:
     Type: AWS::Serverless::Function
