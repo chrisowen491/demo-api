@@ -34,9 +34,9 @@ jobs:
 
   validate:
     runs-on: ubuntu-latest
-    needs: job1
+    needs: deploy-using-sam
     env:
-      ENV_NAME: deploy-using-sam
+      ENV_NAME: sit1
     steps:
       - uses: actions/checkout@v2
       - name: Post Deploy Checks
