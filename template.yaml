@@ -1,7 +1,7 @@
 AWSTemplateFormatVersion: '2010-09-09'
 Transform: AWS::Serverless-2016-10-31
 Description: >
-  The tranmere5 stack
+  The tranmere6 stack
 
 Globals:
   Function:
@@ -9,6 +9,14 @@ Globals:
     AutoPublishAlias: live
 
 Parameters:
+  Deployment:
+    Type: String
+    Default: Canary10Percent5Minutes
+  S3BucketName:
+    Type: String
+  SwaggerFile:
+    Type: String
+    Default: swagger.yaml
   EnvName:
     Type: String
     Default: sit1
@@ -17,13 +25,9 @@ Parameters:
       - sit1
       - pre1
       - prod1
-  S3BucketName:
-    Type: String
-    Default: tranmere-web-api 
-  SwaggerFile:
-    Type: String
-    Default: swagger.yaml     
 
+# This is not actually used in the template but a really handy snippet to show 
+# to the template can define envioronment specific variables 
 Mappings:
   SpecialFeature1:
     sit1:
@@ -41,7 +45,7 @@ Resources:
       Cors:
         AllowOrigin: "'*'"
       StageName: Prod
-      Name: tranmere5
+      Name: tranmere6
       GatewayResponses:
         UNAUTHORIZED:
           StatusCode: 401
@@ -86,16 +90,22 @@ Resources:
                   - '/'
                   - Ref: SwaggerFile
 
-  tranmere5:
+  tranmere6:
     Type: AWS::Serverless::Function
     Properties:
       CodeUri: src
-      Handler: tranmere5.handler
+      Handler: tranmere6.handler
       Runtime: nodejs12.x
+      DeploymentPreference:
+        Type: !Ref Deployment
+        Alarms:
+          - !Ref AliasErrorMetricGreaterThanZeroAlarm
+          - !Ref LatestVersionErrorMetricGreaterThanZeroAlarm
+      Tracing: Active  
       Environment:
         Variables:
           EnvironmentName: !Ref EnvName
-          SpecialFeature: !FindInMap [SpecialFeature1, !Ref EnvName, answer]
+          SpecialFeature: !FindInMap [SpecialFeature1, !Ref EnvName, answer] # Using the environment variable
       Events:
         PageRequest:
           Type: Api
@@ -104,6 +114,51 @@ Resources:
             RestApiId: !Ref RestApi
             Method: get
 
+  AliasErrorMetricGreaterThanZeroAlarm:
+    Type: "AWS::CloudWatch::Alarm"
+    Properties:
+      AlarmDescription: Lambda Function Error > 0
+      AlarmActions:
+        - !ImportValue cloudwatch-notifications-prod-SlackSNSTopic
+      OKActions:
+        - !ImportValue cloudwatch-notifications-prod-SlackSNSTopic
+      InsufficientDataActions:
+        - !ImportValue cloudwatch-notifications-prod-SlackSNSTopic
+      ComparisonOperator: GreaterThanThreshold
+      Dimensions:
+        - Name: Resource
+          Value: !Sub "${ tranmere6}:live"
+        - Name: FunctionName
+          Value: !Ref tranmere6
+      EvaluationPeriods: 2
+      MetricName: Errors
+      Namespace: AWS/Lambda
+      Period: 60
+      Statistic: Sum
+      Threshold: 0
+  LatestVersionErrorMetricGreaterThanZeroAlarm:
+    Type: "AWS::CloudWatch::Alarm"
+    Properties:
+      AlarmDescription: Lambda Function Error > 0
+      AlarmActions:
+        - !ImportValue cloudwatch-notifications-prod-SlackSNSTopic
+      OKActions:
+        - !ImportValue cloudwatch-notifications-prod-SlackSNSTopic
+      InsufficientDataActions:
+        - !ImportValue cloudwatch-notifications-prod-SlackSNSTopic
+      ComparisonOperator: GreaterThanThreshold
+      Dimensions:
+        - Name: Resource
+          Value: !Ref tranmere6.Version
+        - Name: FunctionName
+          Value: !Ref tranmere6
+      EvaluationPeriods: 2
+      MetricName: Errors
+      Namespace: AWS/Lambda
+      Period: 60
+      Statistic: Sum
+      Threshold: 0
+
   # This shouldn't be necerssary, but API Gateway often seems to lack permission on the lambda when using swagger definitions
   LambdaPermission:
     Type: AWS::Lambda::Permission
@@ -111,14 +166,14 @@ Resources:
       Action: lambda:InvokeFunction
       SourceArn: 
         Fn::Sub: arn:aws:execute-api:${AWS::Region}:${AWS::AccountId}:${RestApi}/*/GET/
-      FunctionName: !Ref tranmere5
+      FunctionName: !Ref tranmere6
       Principal: apigateway.amazonaws.com
 
   StagingBasePathMapping:
     DependsOn: RestApiProdStage
     Type: AWS::ApiGateway::BasePathMapping
     Properties:
-      BasePath: tranmere5
+      BasePath: tranmere6
       DomainName: !Sub "api.${EnvName}.tranmere-web.com"
       RestApiId: !Ref RestApi
       Stage: Prod
@@ -126,4 +181,4 @@ Resources:
 Outputs:
   Endpoint:
     Description: "API Gateway endpoint URL the endpoint"
-    Value: !Sub "https://api.${EnvName}.tranmere-web.com/tranmere5/"
+    Value: !Sub "https://api.${EnvName}.tranmere-web.com/tranmere6/"

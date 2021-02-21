@@ -1,7 +1,7 @@
 {
-  "name": "tranmere5",
+  "name": "tranmere6",
   "version": "0.0.1",
-  "description": "The tranmere5 stack",
+  "description": "The tranmere6 stack",
   "scripts": {
     "build": "cp package.json src/package.json && sam build",
     "pretest": "eslint .",

@@ -1,8 +1,8 @@
 openapi: "3.0.1"
 info:
-  description: "The tranmere5 stack is really great in my opinion"
+  description: "The tranmere6 stack"
   version: "1.0"
-  title: "tranmere5"
+  title: "tranmere6"
 paths:
   /:
     get:
@@ -20,7 +20,7 @@ paths:
           default:
             statusCode: "200"
         uri:
-          Fn::Sub: arn:${AWS::Partition}:apigateway:${AWS::Region}:lambda:path/2015-03-31/functions/${tranmere5.Arn}/invocations
+          Fn::Sub: arn:${AWS::Partition}:apigateway:${AWS::Region}:lambda:path/2015-03-31/functions/${tranmere6.Arn}/invocations
 components:
   schemas:
     Message:

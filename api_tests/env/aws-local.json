@@ -7,13 +7,7 @@
 			"value": "localhost:3000",
 			"description": "",
 			"enabled": true
-		},
-		{
-			"key": "basePath",
-			"value": "",
-			"description": "",
-			"enabled": true
-		},
+        },
 		{
 			"key": "protocol",
 			"value": "http",
