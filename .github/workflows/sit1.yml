@@ -31,6 +31,14 @@ jobs:
       - name: SAM Deploy
         run:
           sam deploy --tags env=$ENV_NAME --no-fail-on-empty-changeset --stack-name tranmere6-$ENV_NAME --s3-bucket ${{ secrets.AWS_DEPLOY_BUCKET }} --capabilities CAPABILITY_IAM --parameter-overrides S3BucketName=${{ secrets.AWS_DEPLOY_BUCKET }} SwaggerFile=swagger-${{ steps.generate-uuid.outputs.uuid }}.yaml Deployment=AllAtOnce
+
+  validate:
+    runs-on: ubuntu-latest
+    needs: job1
+    env:
+      ENV_NAME: deploy-using-sam
+    steps:
+      - uses: actions/checkout@v2
       - name: Post Deploy Checks
         run: 
-          npm install && node ./node_modules/newman/bin/newman run ./api_tests/postman-collection.json -e ./api_tests/env/aws-sit1.json
+          npm install && node ./node_modules/newman/bin/newman run ./api_tests/postman-collection.json -e ./api_tests/env/aws-sit1.json         
