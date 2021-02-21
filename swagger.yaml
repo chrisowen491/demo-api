@@ -1,0 +1,30 @@
+openapi: "3.0.1"
+info:
+  description: "The tranmere5 stack is really great"
+  version: "1.0"
+  title: "tranmere5"
+paths:
+  /:
+    get:
+      responses:
+        200:
+          description: "OK"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Message"
+      x-amazon-apigateway-integration:
+        httpMethod: POST
+        type: aws_proxy
+        responses:
+          default:
+            statusCode: "200"
+        uri:
+          Fn::Sub: arn:${AWS::Partition}:apigateway:${AWS::Region}:lambda:path/2015-03-31/functions/${tranmere5.Arn}/invocations
+components:
+  schemas:
+    Message:
+      type: object
+      properties:
+        message:
+          type: string 

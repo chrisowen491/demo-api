@@ -1,11 +1,12 @@
 {
-  "name": "tranmere3",
+  "name": "tranmere5",
   "version": "0.0.1",
-  "description": "The tranmere3 stack",
+  "description": "The tranmere5 stack",
   "scripts": {
     "build": "cp package.json src/package.json && sam build",
     "pretest": "eslint .",
-    "test": "nyc mocha tests/unit/"
+    "test": "nyc mocha tests/unit/",
+    "precommit": "npm run test && sam validate"
   },
   "vertical": "Insurance",
   "author": "",
@@ -13,9 +14,10 @@
     "aws-xray-sdk": "^3.2.0"
   },
   "devDependencies": {
-    "aws-sdk": "^2.815.0",
     "eslint": "^6.6.0",
     "nyc": "^15.1.0",
+    "aws-sdk": "^2.815.0",
+    "aws-xray-sdk": "^3.2.0",
     "chai": "^4.2.0",
     "mocha": "^8.2.1",
     "newman": "^5.2.2",

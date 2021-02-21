@@ -1,10 +1,22 @@
 {
 	"id": "886144eb-13dd-47d8-81d8-eb7097840a47",
-	"name": "aws-test",
+	"name": "aws-sit1",
 	"values": [
 		{
 			"key": "domain",
 			"value": "api.sit1.tranmere-web.com",
+			"description": "",
+			"enabled": true
+		},
+		{
+			"key": "basePath",
+			"value": "tranmere5",
+			"description": "",
+			"enabled": true
+		},
+		{
+			"key": "protocol",
+			"value": "https",
 			"description": "",
 			"enabled": true
 		}

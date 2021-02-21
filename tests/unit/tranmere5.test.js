@@ -1,11 +1,11 @@
 "use strict";
 
-const app = require("../../src/tranmere3.js");
+const app = require("../../src/tranmere5.js");
 const chai = require("chai");
 const expect = chai.expect;
 var event, context;
 
-describe("Tests tranmere3", function () {
+describe("Tests tranmere5", function () {
     it("verifies successful response", async () => {
         const result = await app.handler(event, context)
 
