@@ -22,9 +22,7 @@ jobs:
         run: npm run build
       - name: Set UUID
         id: generate-uuid
-        uses: filipstefansson/uuid-action@v1
-        with:
-          name: ${{ gihub.sha }}        
+        uses: filipstefansson/uuid-action@v1      
       - name: Swagger Upload
         run: aws s3 cp swagger.yaml s3://${{ secrets.AWS_DEPLOY_BUCKET }}/swagger-${{ steps.generate-uuid.outputs.uuid }}.yaml  
       - name: SAM Deploy
