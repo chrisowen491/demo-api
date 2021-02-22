@@ -7,6 +7,6 @@ exports.handler = async function (event, context) {
       "Access-Control-Allow-Origin": "*"
     },
     "statusCode": 200,
-    "body": JSON.stringify({message: 'hello world'})
+    "body": JSON.stringify({message: 'hello wor
   };
 }
