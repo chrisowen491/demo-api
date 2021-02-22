@@ -6,7 +6,7 @@ on:
       - main
 jobs:
 
-  build-test-and-package:
+  build_test_and_package:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
@@ -41,7 +41,7 @@ jobs:
 
   update-config-repo:
     runs-on: ubuntu-latest
-    needs: [build-test-and-package]
+    needs: [build_test_and_package]
     steps:
       - uses: actions/checkout@v2
         with:
@@ -57,4 +57,4 @@ jobs:
         run: |
           git config --global user.name '${{ github.repository }}/actions'
           git config --global user.email '<>'
-          git commit -am 'Updated tranmere3 with new configuration ${{build-test-and-package.tag_repo.new_tag}}'
+          git commit -am 'Updated tranmere3 with new configuration ${{build_test_and_package.tag_repo.new_tag}}'
