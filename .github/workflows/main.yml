@@ -57,4 +57,4 @@ jobs:
         run: |
           git config --global user.name '${{ github.repository }}/actions'
           git config --global user.email '<>'
-          git commit -am 'Updated tranmere3 with new configuration ${{build_test_and_package.tag_repo.new_tag}}'
+          git commit -am 'Updated tranmere3 with new configuration ${{ needs.build_test_and_package.steps.tag_repo.outputs.new_tag }}'
