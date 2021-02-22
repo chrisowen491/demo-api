@@ -63,4 +63,4 @@ jobs:
           git config --global user.email '<>'
           git add -A
           git commit -am 'Updated tranmere3 with new configuration ${{needs.build_test_and_package.outputs.tag}}'
-          git push --quiet
+          git push
