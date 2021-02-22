@@ -149,7 +149,7 @@ Resources:
       ComparisonOperator: GreaterThanThreshold
       Dimensions:
         - Name: Resource
-          Value: !Ref tranmere6.Version
+          Value: !Sub "${ tranmere6}:LATEST"
         - Name: FunctionName
           Value: !Ref tranmere6
       EvaluationPeriods: 2
