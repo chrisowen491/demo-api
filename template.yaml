@@ -1,7 +1,7 @@
 AWSTemplateFormatVersion: '2010-09-09'
 Transform: AWS::Serverless-2016-10-31
 Description: >
-  The tranmere3 stack
+  The tranmere6 stack
 
 Globals:
   Function:
@@ -9,83 +9,176 @@ Globals:
     AutoPublishAlias: live
 
 Parameters:
-  EnvironmentName:
+  Deployment:
+    Type: String
+    Default: Canary10Percent5Minutes
+  S3BucketName:
+    Type: String
+  SwaggerFile:
+    Type: String
+    Default: swagger.yaml
+  EnvName:
     Type: String
     Default: sit1
+    Description: The name of the environment to deploy to
+    AllowedValues:
+      - sit1
+      - pre1
+      - prod1
+
+# This is not actually used in the template but a really handy snippet to show 
+# to the template can define envioronment specific variables 
+Mappings:
+  SpecialFeature1:
+    sit1:
+      answer: 1      
+    pre1:
+      answer: 1
+    prod1:
+      answer: 1   
 
 Resources:     
 
-  tranmere3Function:
+  RestApi:
+    Type: AWS::Serverless::Api
+    Properties:
+      Cors:
+        AllowOrigin: "'*'"
+      StageName: Prod
+      Name: tranmere6
+      GatewayResponses:
+        UNAUTHORIZED:
+          StatusCode: 401
+          ResponseParameters:
+            Headers:
+              Access-Control-Allow-Origin: "'*'"
+        ACCESS_DENIED:
+          StatusCode: 403
+          ResponseParameters:
+            Headers:
+              Access-Control-Allow-Origin: "'*'"
+        INVALID_API_KEY:
+          StatusCode: 200
+          ResponseParameters:
+            Headers:
+              Access-Control-Allow-Origin: "'*'"
+              Access-Control-Allow-Headers: "'x-api-key,content-type'"
+        MISSING_AUTHENTICATION_TOKEN:
+          StatusCode: 403
+          ResponseParameters:
+            Headers:
+              Access-Control-Allow-Origin: "'*'"
+        DEFAULT_5XX:
+          StatusCode: 500
+          ResponseParameters:
+            Headers:
+              Access-Control-Allow-Origin: "'*'"
+        RESOURCE_NOT_FOUND:
+          StatusCode: 404
+          ResponseParameters:
+            Headers:
+              Access-Control-Allow-Origin: "'*'"
+      DefinitionBody:
+        Fn::Transform:
+          Name: AWS::Include
+          Parameters:
+            Location:
+              Fn::Join:
+                - ''
+                - - 's3://'
+                  - Ref: S3BucketName
+                  - '/'
+                  - Ref: SwaggerFile
+
+  tranmere6:
     Type: AWS::Serverless::Function
     Properties:
-      CodeUri: src/
-      Handler: tranmere3.handler
+      CodeUri: src
+      Handler: tranmere6.handler
       Runtime: nodejs12.x
+      DeploymentPreference:
+        Type: !Ref Deployment
+        Alarms:
+          - !Ref AliasErrorMetricGreaterThanZeroAlarm
+          - !Ref LatestVersionErrorMetricGreaterThanZeroAlarm
+      Tracing: Active  
       Environment:
         Variables:
-          EnvironmentName: !Ref 'EnvironmentName'
+          EnvironmentName: !Ref EnvName
+          SpecialFeature: !FindInMap [SpecialFeature1, !Ref EnvName, answer] # Using the environment variable
       Events:
         PageRequest:
           Type: Api
           Properties:
             Path: /
+            RestApiId: !Ref RestApi
             Method: get
 
-    ServerlessRestApi:
-      Type: AWS::Serverless::Api
-      Properties:
-        StageName: Prod
-        Cors:
-          AllowMethods: "'POST, GET'"
-          AllowHeaders: "'X-Forwarded-For'"
-          AllowOrigin: "*"
-          AllowCredentials: True
-        DefinitionBody:
-          swagger: "2.0"
-          info:
-            description: "This is a description."
-            version: "1.0"
-            title:
-              Ref: AWS::StackName
-          tags:
-            - name: "example"
-              description: "example tag"
-          paths:
-            "/tranmere3":
-              get:
-                tags:
-                  - "example"
-                summary: "A summary"
-                description: "A description"
-                operationId: "tranmerd3"
-                produces:
-                  - "application/json"
-                parameters:
-                  - name: "test"
-                    in: "query"
-                    description: "A test parameter"
-                    required: false
-                    type: "integer"
-                    format: "int64"
-                responses:
-                  "200":
-                    description: "Success"
-                x-amazon-apigateway-integration:
-                  httpMethod: POST
-                  type: aws_proxy
-                  uri:
-                    Fn::Sub: arn:${AWS::Partition}:apigateway:${AWS::Region}:lambda:path/2015-03-31/functions/${tranmere3Function.Arn}/invocations
+  AliasErrorMetricGreaterThanZeroAlarm:
+    Type: "AWS::CloudWatch::Alarm"
+    Properties:
+      AlarmDescription: Lambda Function Error > 0
+      AlarmActions:
+        - !ImportValue cloudwatch-notifications-prod-SlackSNSTopic
+      OKActions:
+        - !ImportValue cloudwatch-notifications-prod-SlackSNSTopic
+      InsufficientDataActions:
+        - !ImportValue cloudwatch-notifications-prod-SlackSNSTopic
+      ComparisonOperator: GreaterThanThreshold
+      Dimensions:
+        - Name: Resource
+          Value: !Sub "${ tranmere6}:live"
+        - Name: FunctionName
+          Value: !Ref tranmere6
+      EvaluationPeriods: 2
+      MetricName: Errors
+      Namespace: AWS/Lambda
+      Period: 60
+      Statistic: Sum
+      Threshold: 0
+  LatestVersionErrorMetricGreaterThanZeroAlarm:
+    Type: "AWS::CloudWatch::Alarm"
+    Properties:
+      AlarmDescription: Lambda Function Error > 0
+      AlarmActions:
+        - !ImportValue cloudwatch-notifications-prod-SlackSNSTopic
+      OKActions:
+        - !ImportValue cloudwatch-notifications-prod-SlackSNSTopic
+      InsufficientDataActions:
+        - !ImportValue cloudwatch-notifications-prod-SlackSNSTopic
+      ComparisonOperator: GreaterThanThreshold
+      Dimensions:
+        - Name: Resource
+          Value: !Sub "${ tranmere6}:$LATEST"
+        - Name: FunctionName
+          Value: !Ref tranmere6
+      EvaluationPeriods: 2
+      MetricName: Errors
+      Namespace: AWS/Lambda
+      Period: 60
+      Statistic: Sum
+      Threshold: 0
 
-    StagingBasePathMapping:
-      DependsOn: ServerlessRestApiProdStage
-      Type: AWS::ApiGateway::BasePathMapping
-      Properties:
-        BasePath: tranmere3
-        DomainName: api.sit1.tranmere-web.com
-        RestApiId: !Ref ServerlessRestApi
-        Stage: Prod
+  # This shouldn't be necerssary, but API Gateway often seems to lack permission on the lambda when using swagger definitions
+  LambdaPermission:
+    Type: AWS::Lambda::Permission
+    Properties: 
+      Action: lambda:InvokeFunction
+      SourceArn: 
+        Fn::Sub: arn:aws:execute-api:${AWS::Region}:${AWS::AccountId}:${RestApi}/*/GET/
+      FunctionName: !Ref tranmere6
+      Principal: apigateway.amazonaws.com
+
+  StagingBasePathMapping:
+    DependsOn: RestApiProdStage
+    Type: AWS::ApiGateway::BasePathMapping
+    Properties:
+      BasePath: tranmere6
+      DomainName: !Sub "api.${EnvName}.tranmere-web.com"
+      RestApiId: !Ref RestApi
+      Stage: Prod
 
 Outputs:
   Endpoint:
     Description: "API Gateway endpoint URL the endpoint"
-    Value: "https://api.sit1.tranmere-web.com/tranmere3/"
+    Value: !Sub "https://api.${EnvName}.tranmere-web.com/tranmere6/"
