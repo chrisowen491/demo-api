@@ -115,3 +115,13 @@ jobs:
       - name: Post Deploy Checks
         run: 
           npm install && node ./node_modules/newman/bin/newman run ./api_tests/postman-collection.json -e ./api_tests/env/aws-ci1.json 
+
+  zap_scan:
+    runs-on: ubuntu-latest
+    name: Scan the webapplication
+    steps:
+      - name: ZAP Scan
+        uses: zaproxy/action-baseline@v0.4.0
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+          target: 'https://api.ci1.tranmere-web.com/tranmere6/'        
