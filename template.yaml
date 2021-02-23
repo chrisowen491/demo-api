@@ -21,6 +21,7 @@ Parameters:
     Description: The name of the environment to deploy to
     AllowedValues:
       - local
+      - ci1      
       - sit1
       - pre1
       - prod1
