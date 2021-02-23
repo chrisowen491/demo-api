@@ -19,6 +19,11 @@ jobs:
         run: npm run build
       - name: Unit Test
         run: npm run test
+      - name: Archive Coverage Report
+        uses: actions/upload-artifact@v2
+        with:
+          name: coverage
+          path: coverage/*  
       - name: Configure AWS credentials
         id: creds
         uses: aws-actions/configure-aws-credentials@v1
