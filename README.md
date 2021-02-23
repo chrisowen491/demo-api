@@ -88,7 +88,8 @@ If you have permissions to deploy to an AWS account for the CLI to build and dep
 
 ```bash
 $ npm run build
-$ sam deploy --stack-name tranmere6 --capabilities CAPABILITY_IAM --s3-bucket tranmere-web-api
+$ aws s3 cp swagger.yaml s3://tranmere-web-api/swagger.yaml
+$ sam deploy --config-file samconfig.toml --config-env sit1
 ```
 
 ### Fetch, tail, and filter Lambda function logs

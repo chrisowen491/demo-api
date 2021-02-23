@@ -1,0 +1,28 @@
+version = 0.1
+[default]
+[default.deploy]
+[default.deploy.parameters]
+stack_name = "tranmere7"
+region = "eu-west-1"
+capabilities = "CAPABILITY_IAM"
+parameter_overrides = "Deployment=\"AllAtOnce\" EnvName=\"local\""
+
+[sit1]
+[sit1.deploy]
+[sit1.deploy.parameters]
+stack_name = "tranmere7-sit1"
+s3_bucket = "tranmere-web-api"
+region = "eu-west-1"
+confirm_changeset = false
+capabilities = "CAPABILITY_IAM"
+parameter_overrides = "Deployment=\"Canary10Percent5Minutes\" S3BucketName=\"tranmere-web-api\" SwaggerFile=\"swagger.yaml\" EnvName=\"sit1\""
+
+[pre1]
+[pre1.deploy]
+[pre1.deploy.parameters]
+stack_name = "tranmere7-pre1"
+s3_bucket = "tranmere-web-api"
+region = "eu-west-1"
+confirm_changeset = false
+capabilities = "CAPABILITY_IAM"
+parameter_overrides = "Deployment=\"Canary10Percent5Minutes\" S3BucketName=\"tranmere-web-api\" SwaggerFile=\"swagger.yaml\" EnvName=\"pre1\""
