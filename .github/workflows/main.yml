@@ -121,4 +121,4 @@ jobs:
         uses: zaproxy/action-baseline@v0.4.0
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
-          target: https://api.${{ ENV_NAME }}.tranmere-web.com/tranmere6/        
+          target: https://api.$ENV_NAME.tranmere-web.com/tranmere6/        
