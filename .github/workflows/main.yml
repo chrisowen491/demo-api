@@ -4,8 +4,11 @@ on:
   pull_request:
     branches:
       - main
-jobs:
 
+env:
+  ENV_NAME: ci1      
+
+jobs:
   build_test_and_package:
     runs-on: ubuntu-latest
     outputs:
@@ -37,7 +40,7 @@ jobs:
      # - name: Swagger Upload
      #   run: aws s3 cp swagger.yaml s3://${{ secrets.AWS_DEPLOY_BUCKET }}/swagger-${{ steps.generate-uuid.outputs.uuid }}.yaml                  
       - name: SAM Package
-        run: sam package --output-template-file packaged-template.yaml --s3-bucket tranmere-web-api  
+        run: sam package --output-template-file packaged-template.yaml --s3-bucket ${{ secrets.AWS_DEPLOY_BUCKET }}
       - name: Archive template
         uses: actions/upload-artifact@v2
         with:
@@ -78,11 +81,6 @@ jobs:
   ci-deploy:
     runs-on: ubuntu-latest
     needs: update-config-repo
-    env:
-      ENV_NAME: ci1
-    environment:   
-      name: ci1
-      url: https://api.ci1.tranmere-web.com/tranmere6/
     steps:
       - uses: actions/checkout@v2
       - name: Configure AWS credentials
@@ -108,20 +106,19 @@ jobs:
   acceptance_test:
     runs-on: ubuntu-latest
     needs: ci-deploy
-    env:
-      ENV_NAME: ci1
     steps:
       - uses: actions/checkout@v2
       - name: Post Deploy Checks
         run: 
-          npm install && node ./node_modules/newman/bin/newman run ./api_tests/postman-collection.json -e ./api_tests/env/aws-ci1.json 
+          npm install && node ./node_modules/newman/bin/newman run ./api_tests/postman-collection.json -e ./api_tests/env/aws-$ENV_NAME.json 
 
   zap_scan:
     runs-on: ubuntu-latest
     name: Scan the webapplication
+    needs: ci-deploy
     steps:
       - name: ZAP Scan
         uses: zaproxy/action-baseline@v0.4.0
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
-          target: 'https://api.ci1.tranmere-web.com/tranmere6/'        
+          target: 'https://api.$ENV_NAME.tranmere-web.com/tranmere6/'        
