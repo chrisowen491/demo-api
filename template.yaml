@@ -1,8 +1,6 @@
 AWSTemplateFormatVersion: '2010-09-09'
 Transform: AWS::Serverless-2016-10-31
-Description: >
-  The tranmere6 stack
-
+Description: The tranmere6 stack
 Globals:
   Function:
     Timeout: 3
@@ -22,6 +20,8 @@ Parameters:
     Default: sit1
     Description: The name of the environment to deploy to
     AllowedValues:
+      - local
+      - ci1      
       - sit1
       - pre1
       - prod1
@@ -30,6 +30,8 @@ Parameters:
 # to the template can define envioronment specific variables 
 Mappings:
   SpecialFeature1:
+    ci1:
+      answer: 1  
     sit1:
       answer: 1      
     pre1:
@@ -127,7 +129,7 @@ Resources:
       ComparisonOperator: GreaterThanThreshold
       Dimensions:
         - Name: Resource
-          Value: !Sub "${ tranmere6}:live"
+          Value: !Sub "${tranmere6}:live"
         - Name: FunctionName
           Value: !Ref tranmere6
       EvaluationPeriods: 2
@@ -149,7 +151,7 @@ Resources:
       ComparisonOperator: GreaterThanThreshold
       Dimensions:
         - Name: Resource
-          Value: !Sub "${ tranmere6}:$LATEST"
+          Value: !Sub "${tranmere6}"
         - Name: FunctionName
           Value: !Ref tranmere6
       EvaluationPeriods: 2
