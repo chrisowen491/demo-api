@@ -52,28 +52,28 @@ jobs:
           RELEASE_BRANCHES: .* 
           INITIAL_VERSION: v1.0.0             
 
-  #update-config-repo:
-  #  runs-on: ubuntu-latest
-  #  needs: [build_test_and_package]
-  #  steps:
-  #    - uses: actions/checkout@v2
-  #      with:
-  #        repository: chrisowen491/config
-  #        token: ${{ secrets.GH_TOKEN }}
-  #        ref: master
-  #    - name: Download sam template
-  #      uses: actions/download-artifact@v2
-  #      with:
-  #        name: sam-template    
-  #    - shell: bash
-  #      run: mv packaged-template.yaml sit1/template.yaml               
-  #    - name: Commit Changes
-  #      run: |
-  #        git config --global user.name '${{ github.repository }}/actions'
-  #        git config --global user.email '<>'
-  #        git add -A
-  #        git commit -am 'Updated with new configuration ${{needs.build_test_and_package.outputs.tag}}'
-  #        git push
+  update-config-repo:
+    runs-on: ubuntu-latest
+    needs: [build_test_and_package]
+    steps:
+      - uses: actions/checkout@v2
+        with:
+          repository: chrisowen491/config
+          token: ${{ secrets.GH_TOKEN }}
+          ref: master
+      - name: Download sam template
+        uses: actions/download-artifact@v2
+        with:
+          name: sam-template    
+    #  - shell: bash
+    #  - name: Commit Changes
+    #    run: mv packaged-template.yaml sit1/template.yaml               
+    #    run: |
+    #      git config --global user.name '${{ github.repository }}/actions'
+    #      git config --global user.email '<>'
+    #      git add -A
+    #      git commit -am 'Updated with new configuration ${{needs.build_test_and_package.outputs.tag}}'
+    #      git push
 
   ci-deploy:
     runs-on: ubuntu-latest
