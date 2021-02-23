@@ -4,11 +4,12 @@ on:
   push:
     branches: [ sit1 ]
 
+env:
+  ENV_NAME: sit1
+
 jobs:
   deploy-using-sam:
     runs-on: ubuntu-latest
-    env:
-      ENV_NAME: sit1
     environment:   
       name: sit1
       url: https://api.sit1.tranmere-web.com/tranmere6/
@@ -35,10 +36,8 @@ jobs:
   validate:
     runs-on: ubuntu-latest
     needs: deploy-using-sam
-    env:
-      ENV_NAME: sit1
     steps:
       - uses: actions/checkout@v2
       - name: Post Deploy Checks
         run: 
-          npm install && node ./node_modules/newman/bin/newman run ./api_tests/postman-collection.json -e ./api_tests/env/aws-sit1.json         
+          npm install && node ./node_modules/newman/bin/newman run ./api_tests/postman-collection.json -e ./api_tests/env/aws-$ENV_NAME.json         
