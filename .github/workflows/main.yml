@@ -25,9 +25,14 @@ jobs:
         with:
           aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
           aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-          aws-region: 'eu-west-1'      
+          aws-region: 'eu-west-1'       
+      - name: Run Local API 
+        run: sam local start-api
+      - name: Post Deploy Checks
+        run: 
+          node ./node_modules/newman/bin/newman run ./api_tests/postman-collection.json -e ./api_tests/env/aws-local.json    
       - name: SAM Package
-        run: sam package --output-template-file packaged-template.yaml --s3-bucket tranmere-web-api  
+        run: sam package --output-template-file packaged-template.yaml --s3-bucket tranmere-web-api 
       - name: Archive template
         uses: actions/upload-artifact@v2
         with:
@@ -62,5 +67,5 @@ jobs:
           git config --global user.name '${{ github.repository }}/actions'
           git config --global user.email '<>'
           git add -A
-          git commit -am 'Updated tranmere3 with new configuration ${{needs.build_test_and_package.outputs.tag}}'
+          git commit -am 'Updated with new configuration ${{needs.build_test_and_package.outputs.tag}}'
           git push

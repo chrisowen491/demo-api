@@ -20,6 +20,7 @@ Parameters:
     Default: sit1
     Description: The name of the environment to deploy to
     AllowedValues:
+      - local
       - sit1
       - pre1
       - prod1
