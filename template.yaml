@@ -30,6 +30,8 @@ Parameters:
 # to the template can define envioronment specific variables 
 Mappings:
   SpecialFeature1:
+    ci1:
+      answer: 1  
     sit1:
       answer: 1      
     pre1:
