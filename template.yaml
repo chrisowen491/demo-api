@@ -1,8 +1,6 @@
 AWSTemplateFormatVersion: '2010-09-09'
 Transform: AWS::Serverless-2016-10-31
-Description: >
-  The tranmere6 stack
-
+Description: The tranmere6 stack
 Globals:
   Function:
     Timeout: 3
@@ -14,22 +12,28 @@ Parameters:
     Default: Canary10Percent5Minutes
   S3BucketName:
     Type: String
-  SwaggerFile:
+  OpenAPIFile:
     Type: String
-    Default: swagger.yaml
+    Default: openapi.yaml
   EnvName:
     Type: String
-    Default: sit1
+    Default: local
     Description: The name of the environment to deploy to
     AllowedValues:
+      - local
+      - ci1      
       - sit1
       - pre1
       - prod1
 
 # This is not actually used in the template but a really handy snippet to show 
-# to the template can define envioronment specific variables 
+# to the template can define envioronment specific variables. 
 Mappings:
   SpecialFeature1:
+    local:
+      answer: 1
+    ci1:
+      answer: 1  
     sit1:
       answer: 1      
     pre1:
@@ -42,8 +46,6 @@ Resources:
   RestApi:
     Type: AWS::Serverless::Api
     Properties:
-      Cors:
-        AllowOrigin: "'*'"
       StageName: Prod
       Name: tranmere6
       GatewayResponses:
@@ -82,13 +84,13 @@ Resources:
         Fn::Transform:
           Name: AWS::Include
           Parameters:
-            Location:
+            Location: 
               Fn::Join:
-                - ''
-                - - 's3://'
-                  - Ref: S3BucketName
-                  - '/'
-                  - Ref: SwaggerFile
+              - ''
+              - - s3://
+                - Ref: S3BucketName
+                - /
+                - Ref: OpenAPIFile
 
   tranmere6:
     Type: AWS::Serverless::Function
@@ -127,7 +129,7 @@ Resources:
       ComparisonOperator: GreaterThanThreshold
       Dimensions:
         - Name: Resource
-          Value: !Sub "${ tranmere6}:live"
+          Value: !Sub "${tranmere6}:live"
         - Name: FunctionName
           Value: !Ref tranmere6
       EvaluationPeriods: 2
@@ -149,7 +151,7 @@ Resources:
       ComparisonOperator: GreaterThanThreshold
       Dimensions:
         - Name: Resource
-          Value: !Sub "${ tranmere6}:$LATEST"
+          Value: !Sub "${tranmere6}"
         - Name: FunctionName
           Value: !Ref tranmere6
       EvaluationPeriods: 2
