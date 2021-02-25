@@ -68,9 +68,7 @@ jobs:
         with:
           name: sam-template    
       - shell: bash
-        run: mv packaged-template.yaml ci1/template.yaml  && mv openapi.yaml ci1/openapi.yaml  && mv postman-collection.json ci1/postman-collection.json
-      - shell: bash
-        run: mv postman-collection.json ci1/postman-collection.json  && mv env/aws-ci1.json ci1/aws-ci1.json 
+        run: mv packaged-template.yaml ci1/template.yaml && mv openapi.yaml ci1/openapi.yaml && mv api_tests ci1/api_tests
       - name: Commit Changes
         continue-on-error: true
         run: |
@@ -115,7 +113,7 @@ jobs:
           name: sam-template 
       - name: Post Deploy Checks
         run: 
-          npm install newman && node ./node_modules/newman/bin/newman run ./postman-collection.json -e ./aws-$ENV_NAME.json 
+          npm install newman && node ./node_modules/newman/bin/newman run ./api_tests/postman-collection.json -e ./api_tests/env/aws-$ENV_NAME.json 
 
   zap_scan:
     runs-on: ubuntu-latest
