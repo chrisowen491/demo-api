@@ -17,7 +17,7 @@ Parameters:
     Default: openapi.yaml
   EnvName:
     Type: String
-    Default: sit1
+    Default: local
     Description: The name of the environment to deploy to
     AllowedValues:
       - local
@@ -27,7 +27,7 @@ Parameters:
       - prod1
 
 # This is not actually used in the template but a really handy snippet to show 
-# to the template can define envioronment specific variables 
+# to the template can define envioronment specific variables. 
 Mappings:
   SpecialFeature1:
     local:
@@ -93,7 +93,6 @@ Resources:
                 - Ref: S3BucketName
                 - /
                 - Ref: OpenAPIFile
-
 
   tranmere6:
     Type: AWS::Serverless::Function
