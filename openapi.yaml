@@ -21,10 +21,11 @@ paths:
             statusCode: "200"
         uri:
           Fn::Sub: arn:${AWS::Partition}:apigateway:${AWS::Region}:lambda:path/2015-03-31/functions/${tranmere6.Arn}/invocations
+
 components:
   schemas:
     Message:
       type: object
       properties:
         message:
-          type: string 
+          type: string   
