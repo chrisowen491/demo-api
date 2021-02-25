@@ -1,0 +1,72 @@
+openapi: "3.0.1"
+info:
+  description: "The tranmere6 stack is great"
+  version: "1.0"
+  title: "tranmere6"
+paths:
+  /:
+    get:
+      responses:
+        200:
+          description: "OK"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Message"
+      x-amazon-apigateway-integration:
+        httpMethod: POST
+        type: aws_proxy
+        responses:
+          default:
+            statusCode: "200"
+        uri:
+          Fn::Sub: arn:${AWS::Partition}:apigateway:${AWS::Region}:lambda:path/2015-03-31/functions/${tranmere6.Arn}/invocations
+x-amazon-apigateway-cors:
+  allowOrigins:
+    - '*'
+  allowMethods:
+    - GET
+    - OPTIONS
+    - POST
+  allowHeaders:
+    - x-amzm-header
+    - x-apigateway-header
+    - x-api-key
+    - authorization
+    - x-amz-date
+    - content-type
+    
+x-amazon-apigateway-gateway-responses:
+  ACCESS_DENIED:
+    statusCode: 403
+    responseParameters:
+      gatewayresponse.header.Access-Control-Allow-Origin: "'*'"
+  UNAUTHORIZED:
+    statusCode: 401
+    responseParameters:
+      gatewayresponse.header.Access-Control-Allow-Origin: "'*'"
+  DEFAULT_5XX:
+    statusCode: 500
+    responseParameters:
+      gatewayresponse.header.Access-Control-Allow-Origin: "'*'"
+  MISSING_AUTHENTICATION_TOKEN:
+    statusCode: 403
+    responseParameters:
+      gatewayresponse.header.Access-Control-Allow-Origin: "'*'"
+  INVALID_API_KEY:
+    statusCode: 200
+    responseParameters:
+      gatewayresponse.header.Access-Control-Allow-Origin: "'*'"
+      gatewayresponse.header.Access-Control-Allow-Headers: "'x-api-key,content-type'"
+  RESOURCE_NOT_FOUND:
+    statusCode: 404
+    responseParameters:
+      gatewayresponse.header.Access-Control-Allow-Origin: "'*'"
+
+components:
+  schemas:
+    Message:
+      type: object
+      properties:
+        message:
+          type: string   
