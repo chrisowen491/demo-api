@@ -94,6 +94,7 @@ Resources:
                 - /
                 - Ref: OpenAPIFile
 
+
   tranmere6:
     Type: AWS::Serverless::Function
     Properties:
