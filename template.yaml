@@ -39,8 +39,6 @@ Resources:
   RestApi:
     Type: AWS::Serverless::Api
     Properties:
-      Cors:
-        AllowOrigin: "'*'"
       StageName: Prod
       Name: tranmere6
       GatewayResponses:
