@@ -5,7 +5,7 @@
   "scripts": {
     "build": "cp package.json src/package.json && sam build",
     "pretest": "eslint .",
-    "test": "nyc mocha tests/unit/",
+    "test": "nyc  --reporter=html --reporter=text  mocha tests/unit/",
     "precommit": "npm run test && sam validate"
   },
   "vertical": "Insurance",
