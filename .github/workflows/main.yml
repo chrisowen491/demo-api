@@ -68,7 +68,7 @@ jobs:
         with:
           name: sam-template    
       - shell: bash
-        run: mv packaged-template.yaml ci1/template.yaml && mv openapi.yaml ci1/openapi.yaml && mv api_tests ci1/api_tests
+        run: mv packaged-template.yaml ci1/template.yaml && mv openapi.yaml ci1/openapi.yaml && mv api_tests ci1
       - name: Commit Changes
         continue-on-error: true
         run: |
