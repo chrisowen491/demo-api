@@ -1,8 +1,6 @@
 AWSTemplateFormatVersion: '2010-09-09'
 Transform: AWS::Serverless-2016-10-31
-Description: >
-  The tranmere6 stack
-
+Description: The tranmere6 stack
 Globals:
   Function:
     Timeout: 3
@@ -12,16 +10,13 @@ Parameters:
   Deployment:
     Type: String
     Default: Canary10Percent5Minutes
-  S3BucketName:
-    Type: String
-  SwaggerFile:
-    Type: String
-    Default: swagger.yaml
   EnvName:
     Type: String
     Default: sit1
     Description: The name of the environment to deploy to
     AllowedValues:
+      - local
+      - ci1      
       - sit1
       - pre1
       - prod1
@@ -30,6 +25,8 @@ Parameters:
 # to the template can define envioronment specific variables 
 Mappings:
   SpecialFeature1:
+    ci1:
+      answer: 1  
     sit1:
       answer: 1      
     pre1:
@@ -42,53 +39,9 @@ Resources:
   RestApi:
     Type: AWS::Serverless::Api
     Properties:
-      Cors:
-        AllowOrigin: "'*'"
       StageName: Prod
       Name: tranmere6
-      GatewayResponses:
-        UNAUTHORIZED:
-          StatusCode: 401
-          ResponseParameters:
-            Headers:
-              Access-Control-Allow-Origin: "'*'"
-        ACCESS_DENIED:
-          StatusCode: 403
-          ResponseParameters:
-            Headers:
-              Access-Control-Allow-Origin: "'*'"
-        INVALID_API_KEY:
-          StatusCode: 200
-          ResponseParameters:
-            Headers:
-              Access-Control-Allow-Origin: "'*'"
-              Access-Control-Allow-Headers: "'x-api-key,content-type'"
-        MISSING_AUTHENTICATION_TOKEN:
-          StatusCode: 403
-          ResponseParameters:
-            Headers:
-              Access-Control-Allow-Origin: "'*'"
-        DEFAULT_5XX:
-          StatusCode: 500
-          ResponseParameters:
-            Headers:
-              Access-Control-Allow-Origin: "'*'"
-        RESOURCE_NOT_FOUND:
-          StatusCode: 404
-          ResponseParameters:
-            Headers:
-              Access-Control-Allow-Origin: "'*'"
-      DefinitionBody:
-        Fn::Transform:
-          Name: AWS::Include
-          Parameters:
-            Location:
-              Fn::Join:
-                - ''
-                - - 's3://'
-                  - Ref: S3BucketName
-                  - '/'
-                  - Ref: SwaggerFile
+      DefinitionUri: swagger.yaml
 
   tranmere6:
     Type: AWS::Serverless::Function
@@ -127,7 +80,7 @@ Resources:
       ComparisonOperator: GreaterThanThreshold
       Dimensions:
         - Name: Resource
-          Value: !Sub "${ tranmere6}:live"
+          Value: !Sub "${tranmere6}:live"
         - Name: FunctionName
           Value: !Ref tranmere6
       EvaluationPeriods: 2
@@ -149,7 +102,7 @@ Resources:
       ComparisonOperator: GreaterThanThreshold
       Dimensions:
         - Name: Resource
-          Value: !Sub "${ tranmere6}:$LATEST"
+          Value: !Sub "${tranmere6}"
         - Name: FunctionName
           Value: !Ref tranmere6
       EvaluationPeriods: 2
