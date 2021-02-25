@@ -40,7 +40,7 @@ jobs:
         uses: actions/upload-artifact@v2
         with:
           name: sam-template
-          path: packaged-template.yaml       
+          path: /*.yaml       
       - name: Bump version and push tag
         id: tag_repo
         uses: anothrNick/github-tag-action@1.26.0
@@ -64,7 +64,7 @@ jobs:
         with:
           name: sam-template    
       - shell: bash
-        run: mv packaged-template.yaml sit1/template.yaml               
+        run: mv packaged-template.yaml ci1/template.yaml  && mv openapi.yaml ci1/openapi.yaml              
       - name: Commit Changes
         run: |
           git config --global user.name '${{ github.repository }}/actions'
@@ -88,10 +88,15 @@ jobs:
       - name: Download sam template
         uses: actions/download-artifact@v2
         with:
-          name: sam-template   
+          name: sam-template  
+      - name: Set UUID
+        id: generate-uuid
+        uses: filipstefansson/uuid-action@v1      
+      - name: OpenAPI Upload
+        run: aws s3 cp openapi.yaml s3://${{ secrets.AWS_DEPLOY_BUCKET }}/openapi-${{ steps.generate-uuid.outputs.uuid }}.yaml             
       - name: SAM Deploy
         run:
-          sam deploy --template packaged-template.yaml --tags env=$ENV_NAME --no-fail-on-empty-changeset --stack-name tranmere6-$ENV_NAME --s3-bucket ${{ secrets.AWS_DEPLOY_BUCKET }} --capabilities CAPABILITY_IAM --parameter-overrides EnvName=ci1 Deployment=AllAtOnce
+          sam deploy --template packaged-template.yaml --tags env=$ENV_NAME --no-fail-on-empty-changeset --stack-name tranmere6-$ENV_NAME --s3-bucket ${{ secrets.AWS_DEPLOY_BUCKET }} --parameter-overrides EnvName=ci1 S3BucketName=${{ secrets.AWS_DEPLOY_BUCKET }} OpenAPIFile=openapi-${{ steps.generate-uuid.outputs.uuid }}.yaml --capabilities CAPABILITY_IAM --parameter-overrides EnvName=ci1 Deployment=AllAtOnce
 
   acceptance_test:
     runs-on: ubuntu-latest
