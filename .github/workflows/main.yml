@@ -40,7 +40,9 @@ jobs:
         uses: actions/upload-artifact@v2
         with:
           name: sam-template
-          path: /*.yaml       
+          path: |
+            packaged-template.yaml
+            openapi.yaml
       - name: Bump version and push tag
         id: tag_repo
         uses: anothrNick/github-tag-action@1.26.0
