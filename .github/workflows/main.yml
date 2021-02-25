@@ -35,7 +35,7 @@ jobs:
           aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           aws-region: 'eu-west-1'
       - name: SAM Package
-        run: sam package --output-template-file packaged-template.yaml --s3-bucket ${{ secrets.AWS_DEPLOY_BUCKET }}
+        run: sam package --output-template-file packaged-template.yaml --s3-prefix ${{ github.repository }} --s3-bucket ${{ secrets.AWS_DEPLOY_BUCKET }}
       - name: Archive template
         uses: actions/upload-artifact@v2
         with:
@@ -68,6 +68,7 @@ jobs:
       - shell: bash
         run: mv packaged-template.yaml ci1/template.yaml  && mv openapi.yaml ci1/openapi.yaml              
       - name: Commit Changes
+        continue-on-error: true
         run: |
           git config --global user.name '${{ github.repository }}/actions'
           git config --global user.email '<>'
@@ -95,10 +96,10 @@ jobs:
         id: generate-uuid
         uses: filipstefansson/uuid-action@v1      
       - name: OpenAPI Upload
-        run: aws s3 cp openapi.yaml s3://${{ secrets.AWS_DEPLOY_BUCKET }}/openapi-${{ steps.generate-uuid.outputs.uuid }}.yaml             
+        run: aws s3 cp openapi.yaml s3://${{ secrets.AWS_DEPLOY_BUCKET }}/${{ github.repository }}/openapi-${{ steps.generate-uuid.outputs.uuid }}.yaml             
       - name: SAM Deploy
         run:
-          sam deploy --template packaged-template.yaml --tags env=$ENV_NAME --no-fail-on-empty-changeset --stack-name tranmere6-$ENV_NAME --s3-bucket ${{ secrets.AWS_DEPLOY_BUCKET }} --parameter-overrides EnvName=ci1 S3BucketName=${{ secrets.AWS_DEPLOY_BUCKET }} OpenAPIFile=openapi-${{ steps.generate-uuid.outputs.uuid }}.yaml Deployment=AllAtOnce --capabilities CAPABILITY_IAM
+          sam deploy --template packaged-template.yaml --tags env=$ENV_NAME --no-fail-on-empty-changeset --stack-name tranmere6-$ENV_NAME --s3-bucket ${{ secrets.AWS_DEPLOY_BUCKET }} --s3-prefix ${{ github.repository }} --parameter-overrides EnvName=ci1 S3BucketName=${{ secrets.AWS_DEPLOY_BUCKET }} OpenAPIFile=${{ github.repository }}/openapi-${{ steps.generate-uuid.outputs.uuid }}.yaml Deployment=AllAtOnce --capabilities CAPABILITY_IAM
 
   acceptance_test:
     runs-on: ubuntu-latest
