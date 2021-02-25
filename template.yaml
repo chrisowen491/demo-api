@@ -10,11 +10,6 @@ Parameters:
   Deployment:
     Type: String
     Default: Canary10Percent5Minutes
-  S3BucketName:
-    Type: String
-  SwaggerFile:
-    Type: String
-    Default: swagger.yaml
   EnvName:
     Type: String
     Default: sit1
@@ -80,17 +75,7 @@ Resources:
           ResponseParameters:
             Headers:
               Access-Control-Allow-Origin: "'*'"
-      DefinitionBody:
-        Fn::Transform:
-          Name: AWS::Include
-          Parameters:
-            Location:
-              Fn::Join:
-                - ''
-                - - 's3://'
-                  - Ref: S3BucketName
-                  - '/'
-                  - Ref: SwaggerFile
+      DefinitionUri: swagger.yaml
 
   tranmere6:
     Type: AWS::Serverless::Function
