@@ -16,6 +16,9 @@ jobs:
         ${{steps.tag_repo.outputs.new_tag}}
     steps:
       - uses: actions/checkout@v2
+        with:
+          persist-credentials: false
+          fetch-depth: 0   
       - name: Install
         run: npm install
       - name: Build
