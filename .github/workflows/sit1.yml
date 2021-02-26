@@ -10,6 +10,9 @@ env:
 jobs:
   deploy-using-sam:
     runs-on: ubuntu-latest
+    environment:   
+      name: sit1
+      url: https://api.sit1.tranmere-web.com/tranmere6/      
     steps:
       - uses: actions/checkout@v2
         with:
