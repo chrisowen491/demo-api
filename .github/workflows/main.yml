@@ -46,15 +46,19 @@ jobs:
             api_tests/postman-collection.json
             api_tests/env/aws-*.json
       - shell: bash
-        run: mv packaged-template.yaml packaged.yaml 
+        run: mv packaged-template.yaml packaged.yaml
       - name: Commit Changes
         continue-on-error: true
         run: |
           git config --global user.name '${{ github.repository }}/actions'
           git config --global user.email '<>'
           git add -A
-          git commit -am 'Updated tranmere3 with SAM build'
-          git push
+          git commit -am 'Updated build'
+      - name: Push changes
+        uses: ad-m/github-push-action@master
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          branch: ${{ github.ref }}
       - name: Bump version and push tag
         id: tag_repo
         uses: anothrNick/github-tag-action@1.26.0
@@ -63,7 +67,6 @@ jobs:
           WITH_V: true  
           RELEASE_BRANCHES: .* 
           INITIAL_VERSION: v1.0.0             
-
 
   update-config-repo:
     runs-on: ubuntu-latest
