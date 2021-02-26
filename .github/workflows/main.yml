@@ -16,9 +16,6 @@ jobs:
         ${{steps.tag_repo.outputs.new_tag}}
     steps:
       - uses: actions/checkout@v2
-        with:
-          persist-credentials: false
-          fetch-depth: 0   
       - name: Install
         run: npm install
       - name: Build
@@ -48,20 +45,6 @@ jobs:
             openapi.yaml
             api_tests/postman-collection.json
             api_tests/env/aws-*.json
-      - shell: bash
-        run: mv packaged-template.yaml packaged.yaml
-      - name: Commit Changes
-        continue-on-error: true
-        run: |
-          git config --global user.name '${{ github.repository }}/actions'
-          git config --global user.email '<>'
-          git add -A
-          git commit -am 'Updated build'
-      - name: Push changes
-        uses: ad-m/github-push-action@master
-        with:
-          github_token: ${{ secrets.GITHUB_TOKEN }}
-          branch: ${{ github.ref }}
       - name: Bump version and push tag
         id: tag_repo
         uses: anothrNick/github-tag-action@1.26.0
