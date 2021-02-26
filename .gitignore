@@ -4,3 +4,4 @@ coverage
 src/package.json
 .nyc_output
 api-test-result.json
+packaged-template.yaml
